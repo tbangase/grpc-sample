@@ -1,0 +1,47 @@
+[tasks.required-cmd]
+script = ['''
+#!/bin/bash
+
+echo "=== checking the required command. ==="
+if !(type diesel); then 
+    cat <<- EOF
+        diesel is not found
+        You can install diesel with the following command
+          $ cargo install diesel_cli --no-default-features --features postgres
+EOF
+fi
+''']
+private = true
+workspace = false
+
+[tasks.clean-all]
+description = "`cargo clean` in all workspaces"
+script = ['''
+#!/bin/bash
+
+for f in `find . -maxdepth 3 -and -name Cargo.toml`
+do 
+ echo $f
+ cargo clean --manifest-path $f || exit 1
+done
+''']
+workspace = false
+dependencies = ["required-cmd"]
+
+[tasks.test-all]
+description = "`cargo test` in all workspace except for integration_test. To run integration_test, call with `--with_integration_test` option"
+script = ['''
+#!/bin/bash
+# EXCLUDE_INTEGRATION_TEST="-and -not -path ./integration_tests/Cargo.toml"
+if [ "${@}" = "--with_integration_test" ]; then
+    EXCLUDE_INTEGRATION_TEST=""
+fi
+
+for f in `find . -maxdepth 2 -and -name Cargo.toml $EXCLUDE_INTEGRATION_TEST`
+do
+ echo $f
+ cargo test --manifest-path $f || exit 1
+done
+''']
+workspace = false
+dependencies = ["required-cmd"]
