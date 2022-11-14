@@ -1,0 +1,17 @@
+[package]
+name = "common"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.66"
+async-trait = "0.1.58"
+derive-getters = "0.2.0"
+derive-new = "0.5.9"
+indexmap = { version = "1.9.1", features = ["serde-1"] }
+itertools = "0.10.5"
+mockall = "0.11.3"
+thiserror = "1.0.37"
+typed-builder = "0.11.0"
